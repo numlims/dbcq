@@ -1,3 +1,5 @@
 cli*.ini
 db.ini
 *~
+mydb
+index.txt
