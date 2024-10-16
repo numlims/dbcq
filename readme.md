@@ -36,19 +36,9 @@ db = dbcq("<db target in db.ini>")
 db.qfad("select * from table where name = ?", "adam")
 ```
 
-
-
-if you use mssql install pyodbc, if sqlite install sqlite3:
+if you use mssql install pyodbc, if you use sqlite install sqlite3:
 
 ```
 pip install pyodbc
 pip install sqlite3
-```
-
-## build
-
-say
-
-```
-python3 -m build
 ```
