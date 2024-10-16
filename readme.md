@@ -27,7 +27,22 @@ mssql = <path to your mssql driver>
 then say in code:
 
 ```
-from dbcq import *
+from dbcq import dbcq
 db = dbcq("<db target in db.ini>")
 db.qfad("select * from table where name = ?", "adam")
+```
+
+if you use mssql install pyodbc, if sqlite install sqlite3:
+
+```
+pip install pyodbc
+pip install sqlite3
+```
+
+## build
+
+say
+
+```
+python3 -m build
 ```

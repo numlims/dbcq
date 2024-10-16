@@ -6,7 +6,7 @@
 # qfad: query fetch all dict
 # info: db info
 
-from dbc import *
+from dbcq.dbc import *
 # import jsonpickle
 import argparse
 import pyodbc

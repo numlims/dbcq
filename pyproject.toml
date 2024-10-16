@@ -1,0 +1,20 @@
+[build-system]
+requires = ["hatchling"] # list of packages needed to build your package
+build-backend = "hatchling.build" # name of the python object that frontends use to perform the build
+
+[project]
+name = "dbcq"
+version = "0.0.1"
+authors = [
+  { name="numlims", email="numlims@med.uni-greifswald.de"}
+]
+description = "db connect query"
+readme = "readme.md"
+requires-python = ">=3.8"
+dependencies = [
+  # you could pyodbc or sqlite3 here, but maybe keep it out and let the user install what she needs?
+]
+classifiers = [
+  "Programming Language :: Python :: 3"
+]
+  

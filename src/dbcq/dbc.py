@@ -14,6 +14,7 @@ try:
 except:
     pyodbc = None
 import configparser
+import inspect
 import os
 from pathlib import Path
 try:
@@ -53,8 +54,16 @@ def dburi(target = 'num_test'):
 def dbinfo(target):
     # we don't want the db.ini in the same directory as the code, so that it does't accidentaly end up in github. set db.ini's location in dbc.ini, along with the db driver the client uses
     ini = configparser.ConfigParser()
-    base_name = os.path.dirname(__file__)
-    ini.read(os.path.join(base_name, 'dbc.ini'))
+
+    """__file__ returns the path to dbc.py, if dbc.py is in a seperate
+    package folder we may need a way to get to something like a
+    project root that's not affected by package positions. maybe use
+    os.getcwd for this:
+    https://stackabuse.com/bytes/get-the-root-project-directory-path-in-python/
+    """
+    
+    cwd = os.getcwd()
+    ini.read(os.path.join(cwd, 'dbc.ini'))
     dbinipath = ini["db"]["ini"]
 
     # read db auth info from db.ini
