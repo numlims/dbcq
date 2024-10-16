@@ -2,8 +2,7 @@
 
 dbcq is a little database connection and query wrapper for python.
 
-to open a database connection and get query results as a dict, put the
-connection info in `db.ini`:
+put the connection info in `db.ini`:
 
 ```
 [<db target name used in code>]
@@ -15,6 +14,9 @@ server = <ip address>
 port = <port>
 ```
 
+place the db.ini somewhere where it isn't accidentally shared
+with the rest of your code.
+
 put the driver and path to db.ini in `dbc.ini`:
 
 ```
@@ -24,6 +26,8 @@ ini = <path to your db.ini>
 mssql = <path to your mssql driver>
 ```
 
+place the `dbc.ini` in the root directory of your code.
+
 then say in code:
 
 ```
@@ -31,6 +35,8 @@ from dbcq import dbcq
 db = dbcq("<db target in db.ini>")
 db.qfad("select * from table where name = ?", "adam")
 ```
+
+
 
 if you use mssql install pyodbc, if sqlite install sqlite3:
 
