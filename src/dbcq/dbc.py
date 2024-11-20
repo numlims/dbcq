@@ -24,8 +24,6 @@ except:
 
 # connection returns a database connection
 def dbconnect(target=None):
-    if target == None:
-        target = 'num_test'
     info = dbinfo(target)
     # connect differently depending on database type
     if info['type'] == "sqlite":
@@ -34,7 +32,7 @@ def dbconnect(target=None):
         return pyodbc.connect(_connection_string(target))
 
 # connection_string returns a connection string
-def _connection_string(target='num_test') -> str:
+def _connection_string(target) -> str:
     info = dbinfo(target)
 
     connection_string = 'DRIVER=' + info['driver'] + ';SERVER=' + info['server'] + ';PORT=' + info['port'] + ';DATABASE='+ info['database'] + ';UID=' + info['username'] + ';PWD=' + info['password'] + '; encrypt=no;'
@@ -42,7 +40,7 @@ def _connection_string(target='num_test') -> str:
     return connection_string
 
 # dburi returns a database uri
-def dburi(target = 'num_test'):
+def dburi(target):
     info = dbinfo(target)
     
     # for uri see https://docs.sqlalchemy.org/en/14/core/engines.html#database-urls
@@ -50,37 +48,34 @@ def dburi(target = 'num_test'):
     uri = "mssql+pyodbc://" + info['username'] + ":" + info['password'] + "@" + info['server'] + ":" + info['port'] + "/" + info['database'] + "?driver=" + info['driver'] + "&encrypt=no"
     return uri
 
-# dbinfo gets database info from .ini files
+# dbinfo gets database info from ini file
 def dbinfo(target):
-    # we don't want the db.ini in the same directory as the code, so that it does't accidentaly end up in github. set db.ini's location in dbc.ini, along with the db driver the client uses
-    ini = configparser.ConfigParser()
 
-    """__file__ returns the path to dbc.py, if dbc.py is in a seperate
-    package folder we may need a way to get to something like a
-    project root that's not affected by package positions. maybe use
-    os.getcwd for this:
-    https://stackabuse.com/bytes/get-the-root-project-directory-path-in-python/
-    """
+    if not hasini():
+        return None
     
-    cwd = os.getcwd()
-    ini.read(os.path.join(cwd, 'dbc.ini'))
-    dbinipath = ini["db"]["ini"]
+    # we put a file named .dbcq in the home dir, so it can be read regardless from where the code is called.
 
-    # read db auth info from db.ini
-    config = configparser.ConfigParser()
-    config.read(Path(dbinipath))
-    #print(dict(config))
-    dbtype = config[target]['type']
+    ini = configparser.ConfigParser()
+    ini.read(inipath())
+
     info = {
-        'type': dbtype,
-        'database': config[target]["database"],
-        'username': config[target]["username"] if "username" in config[target] else None,
-        'password': config[target]["password"] if "password" in config[target] else None,
-        'server': config[target]["server"] if "server" in config[target] else None,
-        'port': config[target]["port"] if "port" in config[target] else None,
-        # read the driver from dbc.ini
-        'driver': ini["driver"][dbtype] if ("driver" in ini and dbtype in ini["driver"]) else None
+        'type': ini[target]["type"],
+        'database': ini[target]["database"],
+        'username': ini[target]["username"] if "username" in ini[target] else None,
+        'password': ini[target]["password"] if "password" in ini[target] else None,
+        'server': ini[target]["server"] if "server" in ini[target] else None,
+        'port': ini[target]["port"] if "port" in ini[target] else None,
+        'driver': ini[target]["driver"] if "driver" in ini[target] else None
     }
-    # driver = '{SQL Server}' # for num-etl
-    # driver = '/opt/microsoft/msodbcsql18/lib64/libmsodbcsql-18.3.so.2.1' # for ubuntu on wsl
+    
     return info
+
+# inipath returns the path to the ini
+def inipath():
+    home = Path.home()
+    return home / ".dbcq"
+
+# hasini reports whether there is a .dbcq ini file
+def hasini():
+    return inipath().is_file()

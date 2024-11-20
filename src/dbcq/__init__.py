@@ -7,9 +7,6 @@
 # info: db info
 
 from dbcq.dbc import *
-# import jsonpickle
-import argparse
-import pyodbc
 import sys
 
 class dbcq:
@@ -19,6 +16,14 @@ class dbcq:
         self.target = target
         self.info = dbinfo(target)
 
+    # hasini returns whether there is a .dbcq ini file
+    def hasini():
+        return dbc.hasini()
+    
+    # inipath gives the path where dbcq looks for the .dbcq ini file
+    def inipath():
+        return dbc.inipath()
+    
     # query executes query with optional values
     def query(self, query, *values):
         conn = dbconnect(target=self.target)
@@ -71,38 +76,3 @@ class dbcq:
         return dict(zip([c for c in columns], row))
 
 
-# main
-if __name__ == "__main__":
-    # get database
-    target = sys.argv[1]
-
-    # start dbcq
-    db = dbcq(target)
-
-    # get query
-    query = sys.argv[2] # not so stable?
-
-    # parse arguments
-    parser = argparse.ArgumentParser()
-    parser.add_argument("target", help="a database target in db.ini")
-    parser.add_argument("query", nargs="?", help="a sql query")
-    parser.add_argument("-f", help="a sql query file", required=False)
-    args = parser.parse_args()
-
-    # if file given, take query from file
-    if args.f is not None:
-        query = open(args.f, "r").read()
-#    else: # else take query from commandline # not working?
-#        query = parser.query
-
-    print(f"file: {args.f}")
-
-    print(f"query: {query}")
-
-    # query and print result
-    #print(jsonpickle.encode(db.qfad(query)))
-    # jsonpickle puts decimals in wrappers.
-    # could our db output give simpler types?
-    # for now like this
-
-    print(db.qfad(query))

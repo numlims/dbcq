@@ -4,7 +4,7 @@ build-backend = "hatchling.build" # name of the python object that frontends use
 
 [project]
 name = "dbcq"
-version = "0.0.1"
+version = "0.0.2"
 authors = [
   { name="numlims", email="numlims@med.uni-greifswald.de"}
 ]
@@ -12,9 +12,10 @@ description = "db connect query"
 readme = "readme.md"
 requires-python = ">=3.8"
 dependencies = [
-  # you could pyodbc or sqlite3 here, but maybe keep it out and let the user install what she needs?
+  # you could pyodbc or sqlite3 here, but maybe keep it out and let the user install what he needs?
 ]
 classifiers = [
   "Programming Language :: Python :: 3"
 ]
-  
+[project.scripts]
+dbcq = "dbcq:__main__"
