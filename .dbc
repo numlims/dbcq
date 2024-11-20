@@ -1,6 +1,5 @@
-# db.ini: connection information
-# fill in, maybe put in another directory and put the path to this
-# file in dbc.ini
+# .dbc: db connection information
+# fill in and put in your home directory
 
 [<db target name used in code>]
 type = <mssql|sqlite>
@@ -9,3 +8,4 @@ username = <user name>
 password = <password>
 server = <ip address>
 port = <port>
+driver = <driver>

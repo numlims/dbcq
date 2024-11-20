@@ -48,13 +48,13 @@ def dburi(target):
     uri = "mssql+pyodbc://" + info['username'] + ":" + info['password'] + "@" + info['server'] + ":" + info['port'] + "/" + info['database'] + "?driver=" + info['driver'] + "&encrypt=no"
     return uri
 
-# dbinfo gets database info from ini file
+# dbinfo gets database info from .dbc file
 def dbinfo(target):
 
     if not hasini():
         return None
     
-    # we put a file named .dbcq in the home dir, so it can be read regardless from where the code is called.
+    # we put a file named .dbc in the home dir, so it can be read regardless from where the code is called.
 
     ini = configparser.ConfigParser()
     ini.read(inipath())
@@ -74,7 +74,7 @@ def dbinfo(target):
 # inipath returns the path to the ini
 def inipath():
     home = Path.home()
-    return home / ".dbcq"
+    return home / ".dbc"
 
 # hasini reports whether there is a .dbcq ini file
 def hasini():
