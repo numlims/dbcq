@@ -42,3 +42,21 @@ if you use mssql install pyodbc, if you use sqlite install sqlite3:
 pip install pyodbc
 pip install sqlite3
 ```
+
+## next
+
+maybe look for connection info in ~/.dbcq.ini and accept it as path
+
+$ dbcq -help
+
+your home directory seems to be /my/home. please put a file named
+.dbcq.ini there with the connection info
+
+[<db target name used in code>]
+type = <mssql|sqlite>
+database = <database name>
+username = <user name>
+password = <password>
+server = <ip address>
+port = <port>
+driver = <driver>
