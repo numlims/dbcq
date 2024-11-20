@@ -25,7 +25,7 @@ driver = <driver>
 
     # parse arguments
     parser = argparse.ArgumentParser(description="connect to a database")
-    parser.add_argument("target", help="a database target in db.ini")
+    parser.add_argument("target", help="a target name in .dbcq")
     parser.add_argument("query", nargs="?", help="a sql query")
     parser.add_argument("-f", help="a sql query file", required=False)
     args = parser.parse_args()
@@ -42,15 +42,9 @@ driver = <driver>
     # if file given, take query from file
     if args.f is not None:
         query = open(args.f, "r").read()
-#    else: # else take query from commandline # not working?
-#        query = parser.query
-
-    print(f"file: {args.f}")
-    print(f"target: {args.target}")
-    print(f"query: {args.query}")
 
     # query and print result
-    #print(jsonpickle.encode(db.qfad(query)))
+    # print(jsonpickle.encode(db.qfad(query)))
     # jsonpickle puts decimals in wrappers.
     # could our db output give simpler types?
     # for now like this
