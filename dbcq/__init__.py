@@ -1,39 +1,39 @@
-# dbcq.py holds functions for db connection and querying
+"""
+dbcq holds functions for db connection and querying
+"""
 
-# functions:
-# query: query without fetch
-# qfa: query fetch all
-# qfad: query fetch all dict
-# info: db info
-
-from dbcq.dbc import *
+from dbcq._dbc import *
 import sys
 
 class dbcq:
 
-    # init remembers the target, a config chapter name of db.ini
+    "dbcq opens a db connection to a target from .dbc"
     def __init__(self, target):
         self.target = target
         self.info = dbinfo(target)
 
-    # hasini returns whether there is a .dbcq ini file
     def hasini():
+        "hasini returns whether there is a .dbc ini file in the home"
         return dbc.hasini()
     
-    # inipath gives the path where dbcq looks for the .dbcq ini file
     def inipath():
+        "inipath gives the path where dbcq looks for the .dbc ini file (usually in the home)"
+
         return dbc.inipath()
     
-    # query executes query with optional values
     def query(self, query, *values):
+        "query executes query with optional values"
+
         conn = dbconnect(target=self.target)
         cursor = conn.cursor()
         cursor.execute(query, *values)
         conn.commit()
         conn.close()
 
-    # qfa executes query with optional values and returns results
+
     def qfa(self, query, *values):
+        "qfa executes query with optional values and returns results"
+            
         conn = dbconnect(target=self.target)
         cursor = conn.cursor()
         cursor.execute(query, *values)
@@ -43,8 +43,9 @@ class dbcq:
 
         return rows
 
-    # qfad returns query result as array of dicts, e.g. for json parsing
     def qfad(self, query, *values):
+        "qfad returns query result as array of dicts, e.g. for json parsing"
+
         # for mssql, fold in cursor description of row
         if self.info["type"] == "mssql":
             rows = self.qfa(query, *values)
@@ -64,12 +65,15 @@ class dbcq:
             dicts = [dict(row) for row in rows]
             return dicts
 
-    # info returns database info
     def info(self):
+        "info returns database info"
+
         return self.info
     
-    # _row_to_dict turns pyodbc-rows to dict
+
     def _row_to_dict(self, row):
+        "_row_to_dict turns pyodbc-rows to dict"
+            
         # lowercase column names
         columns = [tup[0].lower() for tup in row.cursor_description]
         # use column names as dict keys

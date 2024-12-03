@@ -1,6 +1,6 @@
 [build-system]
-requires = ["hatchling"] # list of packages needed to build your package
-build-backend = "hatchling.build" # name of the python object that frontends use to perform the build
+requires = ["setuptools"] # list of packages needed to build your package
+build-backend = "setuptools.build_meta" # name of the python object that frontends use to perform the build
 
 [project]
 name = "dbcq"
@@ -19,3 +19,6 @@ classifiers = [
 ]
 [project.scripts]
 dbcq = "dbcq:__main__"
+
+[tool.setuptools]
+packages = ["dbcq"]

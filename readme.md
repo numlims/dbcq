@@ -2,7 +2,9 @@
 
 dbcq is a little database connection and query wrapper for python.
 
-copy the `.dbc` file to your home and fill in the connection info.
+documentation [here](https://numlims.github.io/dbcq/).
+
+copy the `.dbc` file to your home directory and fill in the connection info.
 
 ```
 [<db target name used in code>]
@@ -15,14 +17,14 @@ port = <port>
 driver = <path to db driver if needed>
 ```
 
-if you're unsure where to put your `.dbc` file, say `dbcq` to see
-where dbcq looks the `.dbc` file.
+if you're unsure where your home directory is, say `dbcq` to see
+where dbcq looks the `.dbc` file and put it there.
 
 then say in code:
 
 ```
 from dbcq import dbcq
-db = dbcq("<target name in .dbc>")
+db = dbcq("<target in .dbc>")
 db.qfad("select * from table where name = ?", "adam")
 ```
 

@@ -2,6 +2,7 @@
 
 import sys
 from dbcq import dbcq
+import simplejson as json
 import argparse
 
 # main runs a query and returns the result.
@@ -49,7 +50,7 @@ driver = <driver>
     # could our db output give simpler types?
     # for now like this
 
-    print(db.qfad(query))
+    print(json.dumps(db.qfad(query), default=str))
 
 
 sys.exit(main())
