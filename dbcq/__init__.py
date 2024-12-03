@@ -14,12 +14,12 @@ class dbcq:
 
     def hasini():
         "hasini returns whether there is a .dbc ini file in the home"
-        return dbc.hasini()
+        return _dbc.hasini()
     
     def inipath():
         "inipath gives the path where dbcq looks for the .dbc ini file (usually in the home)"
 
-        return dbc.inipath()
+        return _dbc.inipath()
     
     def query(self, query, *values):
         "query executes query with optional values"
