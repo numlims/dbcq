@@ -6,6 +6,7 @@ dbcq is a little database connection and query wrapper for python.
 db = dbcq("<target in .dbc>")
 db.qfad("select * from table where name = ?", "adam")
 ```
+documentation [here](https://numlims.github.io/dbcq/).
 
 ## install
 
@@ -40,8 +41,3 @@ sqlite install sqlite3):
 pip install pyodbc
 pip install sqlite3
 ```
-
-## documentation
-
-documentation [here](https://numlims.github.io/dbcq/).
-
