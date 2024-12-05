@@ -18,7 +18,10 @@ pip:
 pip install dbcq-<version>.whl
 ```
 
-copy the `.dbc` file to your home directory and fill in the connection info.
+## db connection
+
+in your home directory, create a file named `.dbc` and fill in the
+connection info in the <> brackets like this:
 
 ```
 [<db target name used in code>]
@@ -29,6 +32,19 @@ password = <password>
 server = <ip address>
 port = <port>
 driver = <path to db driver if needed>
+```
+
+for example:
+
+```
+[my_db]
+type = mssql
+database = my_db
+username = hireader
+password = ?hireaderpass?
+server = 10.11.22.33
+port = 1234
+driver = /path/to/my/libmsodbcsql-18.3.so.2.1
 ```
 
 if you're unsure where your home directory is, say `dbcq` to see
