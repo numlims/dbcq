@@ -76,6 +76,6 @@ def inipath():
     home = Path.home()
     return home / ".dbc"
 
-# hasini reports whether there is a .dbcq ini file
+# hasini reports whether there is a .dbc ini file
 def hasini():
     return inipath().is_file()
