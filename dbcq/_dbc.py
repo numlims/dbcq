@@ -71,6 +71,18 @@ def dbinfo(target):
     
     return info
 
+# targets returns the db targets
+def targets():
+    ini = configparser.ConfigParser()
+    ini.read(inipath())
+
+    out = []
+
+    for target in ini.keys():
+        out.append(target)
+
+    return out
+
 # inipath returns the path to the ini
 def inipath():
     home = Path.home()

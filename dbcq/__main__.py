@@ -26,9 +26,10 @@ driver = <driver>
 
     # parse arguments
     parser = argparse.ArgumentParser(description="connect to a database")
-    parser.add_argument("target", help="a target name in .dbc file")
+    parser.add_argument("target", nargs="?", help="a target name in .dbc file")
     parser.add_argument("query", nargs="?", help="a sql query")
     parser.add_argument("-f", help="a sql query file", required=False)
+    parser.add_argument("--targets", action="store_true", help="show targets", required=False)
     args = parser.parse_args()
 
     # get database
@@ -43,6 +44,12 @@ driver = <driver>
     # if file given, take query from file
     if args.f is not None:
         query = open(args.f, "r").read()
+
+    # show targets if needed and exit
+    if args.targets is True:
+        for t in dbcq.targets():
+            print(t)
+        return
 
     # query and print result
     # print(jsonpickle.encode(db.qfad(query)))

@@ -57,3 +57,9 @@ sqlite install sqlite3):
 pip install pyodbc
 pip install sqlite3
 ```
+
+## issues
+
+what about DEFAULT in --targets?
+
+what about pymysql driver?

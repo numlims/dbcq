@@ -10,7 +10,8 @@ class dbcq:
     "dbcq opens a db connection to a target from .dbc"
     def __init__(self, target):
         self.target = target
-        self.info = dbinfo(target)
+        if target:
+            self.info = dbinfo(target)
 
     def hasini():
         "hasini returns whether there is a .dbc ini file in the home"
@@ -20,6 +21,10 @@ class dbcq:
         "inipath gives the path where dbcq looks for the .dbc ini file (usually in the home)"
 
         return _dbc.inipath()
+
+    def targets():
+        "targets gives the db targets from .dbc ini file"
+        return _dbc.targets()
     
     def query(self, query, *values):
         "query executes query with optional values"
