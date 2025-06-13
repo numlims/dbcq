@@ -4,7 +4,7 @@ dbcq is a little database connection and query wrapper for python.
 
 ```
 db = dbcq("<target in .dbc>")
-db.qfad("select * from table where name = ?", "adam")
+result = db.qfad("select * from table where name = ?", "adam")
 ```
 documentation [here](https://numlims.github.io/dbcq/).
 

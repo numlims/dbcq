@@ -27,8 +27,16 @@ def dbconnect(target=None):
     info = dbinfo(target)
     # connect differently depending on database type
     if info['type'] == "sqlite":
+        # is the package installed?
+        if sqlite3 == None:
+            print("error: sqlite3 package missing, please install with pip.")
+            exit
         return sqlite3.connect(info['database'])
     else:
+        # is the package installed?
+        if pyodbc == None:
+            print("error: pyodbc package missing, please install with pip.")
+            exit
         return pyodbc.connect(_connection_string(target))
 
 # connection_string returns a connection string
