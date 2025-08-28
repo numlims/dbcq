@@ -12,10 +12,8 @@ description = "db connect query"
 readme = "readme.md"
 requires-python = ">=3.8"
 dependencies = [
-  "pyodbc",             
-  "simplejson",
-  "sqlite3"
-  # maybe for now install pyodbc and sqlite3 database drivers so that it works out of the box even if you maybe don't need all of them. or just install pyodbc and let the user install others?
+  "pyodbc",    # maybe for now install pyodbc. sqlite is included in the std library. maybe in the future also install other drivers so that they work out of the box?
+  "simplejson"
 ]
 classifiers = [
   "Programming Language :: Python :: 3"

@@ -50,14 +50,6 @@ driver = /path/to/my/libmsodbcsql-18.3.so.2.1
 if you're unsure where your home directory is, say `dbcq` to see
 where dbcq looks the `.dbc` file and put it there.
 
-install the database connector with pip (for mssql install pyodbc, for
-sqlite install sqlite3):
-
-```
-pip install pyodbc
-pip install sqlite3
-```
-
 to get a list of the available pyodbc driver names for `.dbc`, run
 
 ```
