@@ -58,6 +58,12 @@ pip install pyodbc
 pip install sqlite3
 ```
 
+to get a list of the available pyodbc driver names for `.dbc`, run
+
+```
+dbcq --drivers
+```
+
 ## issues
 
 what about DEFAULT in --targets?

@@ -9,14 +9,14 @@
 
 # db interface imports are optional, so that the user can pip install only those he needs.
 
-try:
-    import pyodbc
-except:
-    pyodbc = None
 import configparser
 import inspect
 import os
 from pathlib import Path
+try:
+    import pyodbc
+except:
+    pyodbc = None
 try:
     import sqlite3
 except:

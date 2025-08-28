@@ -5,6 +5,12 @@ from dbcq import dbcq
 import simplejson as json
 import argparse
 
+try:
+    import pyodbc
+except:
+    pyodbc = None
+
+
 # main runs a query and returns the result.
 # it can also display a help message with place to put the .dbcq file 
 def main():
@@ -30,6 +36,7 @@ driver = <driver>
     parser.add_argument("query", nargs="?", help="a sql query")
     parser.add_argument("-f", help="a sql query file", required=False)
     parser.add_argument("--targets", action="store_true", help="show targets", required=False)
+    parser.add_argument("--drivers", action="store_true", help="show pyodbc drivers", required=False)    
     args = parser.parse_args()
 
     # get database
@@ -49,6 +56,12 @@ driver = <driver>
     if args.targets is True:
         for t in dbcq.targets():
             print(t)
+        return
+
+    # show drivers if needed and exit
+    if args.drivers is True:
+        if pyodbc is not None:
+            print(pyodbc.drivers())
         return
 
     # query and print result

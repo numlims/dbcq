@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta" # name of the python object that fronten
 
 [project]
 name = "dbcq"
-version = "0.0.2"
+version = "0.0.4"
 authors = [
   { name="numlims", email="numlims@med.uni-greifswald.de"}
 ]
@@ -12,8 +12,10 @@ description = "db connect query"
 readme = "readme.md"
 requires-python = ">=3.8"
 dependencies = [
-  "simplejson"
-  # you could pyodbc or sqlite3 here, but maybe keep it out and let the user install what he needs?
+  "pyodbc",             
+  "simplejson",
+  "sqlite3"
+  # maybe for now install pyodbc and sqlite3 database drivers so that it works out of the box even if you maybe don't need all of them. or just install pyodbc and let the user install others?
 ]
 classifiers = [
   "Programming Language :: Python :: 3"
