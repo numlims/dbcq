@@ -1,22 +1,64 @@
-from dbcq._dbc import *
-import sys
+dbcq holds functions for db connection and querying.
+
+``//__init__.py:
+``import``
 class dbcq:
+    ``init``
+    ``hasini``
+    ``inipath``
+    ``targets``
+    ``query``
+    ``qfa``
+    ``qfad``
+    ``info``
+    ``_row_to_dict``    
+``
+
+init opens a db connection to a target from .dbc.
+
+``/init:
     def __init__(self, target):
         self.target = target
         if target:
             self.info = dbinfo(target)
+``
+
+hasini returns whether there is a .dbc ini file in the home.
+
+``/hasini:
     def hasini():
         return _dbc.hasini()
+``
+
+inipath gives the path where dbcq looks for the .dbc ini file (usually in the home).
+
+``/inipath:
     def inipath():
         return _dbc.inipath()
+``
+
+targets gives the db targets from .dbc ini file.
+
+``/targets:
     def targets():
         return _dbc.targets()
+``
+
+query executes query with optional values.
+
+``/query:
     def query(self, query, *values):
         with dbconnect(target=self.target) as conn:
             cursor = conn.cursor()
             cursor.execute(query, *values)
             conn.commit()
             conn.close()
+``
+
+qfa (query-fetch-all) executes query with optional values and returns
+the results.
+
+``/qfa:
     def qfa(self, query, *values):
         with dbconnect(target=self.target) as conn:
             cursor = conn.cursor()
@@ -26,12 +68,32 @@ class dbcq:
             conn.close()
 
             return rows
+``
+
+qfad (query-fetch-all-dict) returns query results as an array of dicts,
+e.g. for json parsing.
+
+``/qfad:
     def qfad(self, query, *values):
         if self.info["type"] == "mssql":
+            ``mssql``
+        elif self.info["type"] == "sqlite":
+            ``sqlite``
+        else:
+            ``else``
+``
+
+for mssql, fold in the cursor description of the row.
+
+``./mssql:
             rows = self.qfa(query, *values)
             dicts = [self._row_to_dict(row) for row in rows]
             return dicts
-        elif self.info["type"] == "sqlite":
+``
+
+for sqlite, use row factory. from https://stackoverflow.com/a/41920171
+
+``../sqlite:
             with dbconnect(target=self.target) as conn:
                 cursor = conn.cursor()
                 cursor.row_factory = sqlite3.Row
@@ -42,12 +104,34 @@ class dbcq:
 
                 dicts = [dict(row) for row in rows]
                 return dicts
-        else:
+``
+
+else, say not supported.
+
+``../else:
               print(f"db type {self.info["type"]} is currently not supported.")
+``
+
+info returns database info.
+
+``/info:
     def info(self):
         return self.info
+``    
+
+_row_to_dict turns pyodbc-rows to dict:
+
+``/_row_to_dict:
     def _row_to_dict(self, row):
         # lowercase column names
         columns = [tup[0].lower() for tup in row.cursor_description]
         # use column names as dict keys
         return dict(zip([c for c in columns], row))
+``
+
+the imports.
+
+``/import:
+from dbcq._dbc import *
+import sys
+``

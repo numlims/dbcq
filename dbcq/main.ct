@@ -1,13 +1,23 @@
-import sys
-from dbcq import dbcq
-import simplejson as json
-import argparse
+__main__ is dbcq's cmd line client.
 
-try:
-    import pyodbc
-except:
-    pyodbc = None
+``//__main__.py:
+``import``
+``main``
+sys.exit(main())
+``
+
+
+main runs a query and returns the result. it can also display a help message with place to put the .dbcq file .
+
+``/main:
 def main():
+    ``.``
+``
+
+abort if no ini file. do this before the argparse else argparse
+swallows it (even if this blocks dbcq -h).
+
+``
     if not dbcq.hasini():
         msg = f"""no .dbc file found. please create it at {dbcq.inipath()} and put in the connection info:
 [<target name>]
@@ -21,6 +31,11 @@ driver = <driver>
         """
         print(msg)
         exit()
+``
+
+parse arguments.
+
+``
     parser = argparse.ArgumentParser(description="connect to a database")
     parser.add_argument("target", nargs="?", help="a target name in .dbc file")
     parser.add_argument("query", nargs="?", help="a sql query")
@@ -28,18 +43,66 @@ driver = <driver>
     parser.add_argument("--targets", action="store_true", help="show targets", required=False)
     parser.add_argument("--drivers", action="store_true", help="show pyodbc drivers", required=False)    
     args = parser.parse_args()
+``
+
+start dbcq.
+
+``
     db = dbcq(args.target)
+``
+
+get the query. if file given, take query from file.
+
+``
     query = args.query
     if args.f is not None:
         with open(args.f, "r") as f:
             query = f.read()
+``
+
+show targets if needed and exit.
+
+``
     if args.targets is True:
         for t in dbcq.targets():
             print(t)
         return
+``
+
+show drivers if needed and exit.
+
+``
     if args.drivers is True:
         if pyodbc is not None:
             print(pyodbc.drivers())
         return
+``
+
+query and print result.
+
+    # print(jsonpickle.encode(db.qfad(query)))
+    # jsonpickle puts decimals in wrappers.
+    # could our db output give simpler types?
+    
+for now like this:
+
+``
     print(json.dumps(db.qfad(query), default=str))
-sys.exit(main())
+``
+
+the imports.
+
+pyodbc shouldn't need a try anymore, cause it's listed as dependency
+in pyproject.toml.
+
+``/import:
+import sys
+from dbcq import dbcq
+import simplejson as json
+import argparse
+
+try:
+    import pyodbc
+except:
+    pyodbc = None
+``
