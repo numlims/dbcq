@@ -56,6 +56,16 @@ to get a list of the available pyodbc driver names for `.dbc`, run
 dbcq --drivers
 ```
 
+## dev
+
+assemble code from the .ct files with [ct](https://github.com/tnustrings/ct).
+
+build and install:
+
+```
+make install
+```
+
 ## issues
 
 what about DEFAULT in --targets?
