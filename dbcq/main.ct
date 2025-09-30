@@ -14,25 +14,6 @@ def main():
     ``.``
 ``
 
-abort if no ini file. do this before the argparse else argparse
-swallows it (even if this blocks dbcq -h).
-
-``
-    if not dbcq.hasini():
-        msg = f"""no .dbc file found. please create it at {dbcq.inipath()} and put in the connection info:
-[<target name>]
-type = <mssql|sqlite>
-database = <database name>
-username = <user name>
-password = <password>
-server = <ip address>
-port = <port>
-driver = <driver>
-        """
-        print(msg)
-        exit()
-``
-
 parse arguments.
 
 ``

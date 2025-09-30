@@ -8,19 +8,6 @@ try:
 except:
     pyodbc = None
 def main():
-    if not dbcq.hasini():
-        msg = f"""no .dbc file found. please create it at {dbcq.inipath()} and put in the connection info:
-[<target name>]
-type = <mssql|sqlite>
-database = <database name>
-username = <user name>
-password = <password>
-server = <ip address>
-port = <port>
-driver = <driver>
-        """
-        print(msg)
-        exit()
     parser = argparse.ArgumentParser(description="connect to a database")
     parser.add_argument("target", nargs="?", help="a target name in .dbc file")
     parser.add_argument("query", nargs="?", help="a sql query")

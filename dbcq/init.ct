@@ -18,6 +18,30 @@ init opens a db connection to a target from .dbc.
 
 ``/init:
     def __init__(self, target):
+        ``.``
+``
+
+abort if no ini file. do this before the argparse else argparse
+swallows it (even if this blocks dbcq -h).
+
+``
+        if not hasini():
+            msg = f"""dbcq: {dbcq.inipath()} not found. please create the file and fill in:
+[<target name>]
+type = <mssql|sqlite>
+database = <database name>
+username = <user name>
+password = <password>
+server = <ip address>
+port = <port>
+driver = <driver>"""
+            print(msg)
+            raise Exception("no .dbc file")
+``
+
+get the database info for the target.
+
+``
         self.target = target
         if target:
             self.info = dbinfo(target)
@@ -109,7 +133,7 @@ for sqlite, use row factory. from https://stackoverflow.com/a/41920171
 else, say not supported.
 
 ``../else:
-              print(f"db type {self.info["type"]} is currently not supported.")
+              print(f"db type {self.info['type']} is currently not supported.")
 ``
 
 info returns database info.

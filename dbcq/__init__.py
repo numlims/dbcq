@@ -2,6 +2,18 @@ from dbcq._dbc import *
 import sys
 class dbcq:
     def __init__(self, target):
+        if not hasini():
+            msg = f"""dbcq: {dbcq.inipath()} not found. please create the file and fill in:
+[<target name>]
+type = <mssql|sqlite>
+database = <database name>
+username = <user name>
+password = <password>
+server = <ip address>
+port = <port>
+driver = <driver>"""
+            print(msg)
+            raise Exception("no .dbc file")
         self.target = target
         if target:
             self.info = dbinfo(target)
@@ -43,7 +55,7 @@ class dbcq:
                 dicts = [dict(row) for row in rows]
                 return dicts
         else:
-              print(f"db type {self.info["type"]} is currently not supported.")
+              print(f"db type {self.info['type']} is currently not supported.")
     def info(self):
         return self.info
     def _row_to_dict(self, row):
