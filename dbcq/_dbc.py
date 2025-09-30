@@ -18,14 +18,14 @@ def dbconnect(target=None):
             exit
         return sqlite3.connect(info['database'])
     else:
-        # is the package installed?
         if pyodbc == None:
             print("error: pyodbc package missing, please install with pip.")
             exit
+        # print("connection string: " + _connection_string(target))
         return pyodbc.connect(_connection_string(target))
 def _connection_string(target) -> str:
     info = dbinfo(target)
-    connection_string = 'DRIVER=' + info['driver'] + ';SERVER=' + info['server'] + ';PORT=' + info['port'] + ';DATABASE='+ info['database'] + ';UID=' + info['username'] + ';PWD=' + info['password'] + '; encrypt=no;'
+    connection_string = 'DRIVER=' + info['driver'] + ';SERVER=' + info['server'] + ';PORT=' + info['port'] + ';DATABASE='+ info['database'] + ';UID=' + info['username'] + ';PWD=' + info['password'] + ';encrypt=no;'
 
     return connection_string
 def dburi(target):

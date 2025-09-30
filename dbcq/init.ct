@@ -76,7 +76,6 @@ query executes query with optional values.
             cursor = conn.cursor()
             cursor.execute(query, *values)
             conn.commit()
-            conn.close()
 ``
 
 qfa (query-fetch-all) executes query with optional values and returns
@@ -89,7 +88,6 @@ the results.
             cursor.execute(query, *values)
             rows = cursor.fetchall()
             conn.commit()
-            conn.close()
 
             return rows
 ``
@@ -124,7 +122,6 @@ for sqlite, use row factory. from https://stackoverflow.com/a/41920171
                 cursor.execute(query, values) # pass as tuple, see https://stackoverflow.com/a/16856730
                 rows = cursor.fetchall()
                 conn.commit()
-                conn.close()
 
                 dicts = [dict(row) for row in rows]
                 return dicts

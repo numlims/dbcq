@@ -70,10 +70,10 @@ for sqlite. is the package installed?
 else go with pyodbc for now.
 
 ``../else:
-        # is the package installed?
         if pyodbc == None:
             print("error: pyodbc package missing, please install with pip.")
             exit
+        # print("connection string: " + _connection_string(target))
         return pyodbc.connect(_connection_string(target))
 ``
 
@@ -93,7 +93,7 @@ get the info for the target.
 put together the connection string with params from info and return.
 
 ``
-    connection_string = 'DRIVER=' + info['driver'] + ';SERVER=' + info['server'] + ';PORT=' + info['port'] + ';DATABASE='+ info['database'] + ';UID=' + info['username'] + ';PWD=' + info['password'] + '; encrypt=no;'
+    connection_string = 'DRIVER=' + info['driver'] + ';SERVER=' + info['server'] + ';PORT=' + info['port'] + ';DATABASE='+ info['database'] + ';UID=' + info['username'] + ';PWD=' + info['password'] + ';encrypt=no;'
 
     return connection_string
 ``

@@ -28,14 +28,12 @@ driver = <driver>"""
             cursor = conn.cursor()
             cursor.execute(query, *values)
             conn.commit()
-            conn.close()
     def qfa(self, query, *values):
         with dbconnect(target=self.target) as conn:
             cursor = conn.cursor()
             cursor.execute(query, *values)
             rows = cursor.fetchall()
             conn.commit()
-            conn.close()
 
             return rows
     def qfad(self, query, *values):
@@ -50,7 +48,6 @@ driver = <driver>"""
                 cursor.execute(query, values) # pass as tuple, see https://stackoverflow.com/a/16856730
                 rows = cursor.fetchall()
                 conn.commit()
-                conn.close()
 
                 dicts = [dict(row) for row in rows]
                 return dicts
