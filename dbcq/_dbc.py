@@ -11,6 +11,8 @@ try:
 except:
     sqlite = None
 def dbconnect(target=None):
+    """
+    """
     info = dbinfo(target)
     if info['type'] == "sqlite":
         if sqlite3 == None:
@@ -24,15 +26,24 @@ def dbconnect(target=None):
         # print("connection string: " + _connection_string(target))
         return pyodbc.connect(_connection_string(target))
 def _connection_string(target) -> str:
+    """
+    _connection_string returns a connection string.
+    """
     info = dbinfo(target)
     connection_string = 'DRIVER=' + info['driver'] + ';SERVER=' + info['server'] + ';PORT=' + info['port'] + ';DATABASE='+ info['database'] + ';UID=' + info['username'] + ';PWD=' + info['password'] + ';encrypt=no;'
 
     return connection_string
 def dburi(target):
+    """
+    dburi returns a database uri.
+    """
     info = dbinfo(target)
     uri = "mssql+pyodbc://" + info['username'] + ":" + info['password'] + "@" + info['server'] + ":" + info['port'] + "/" + info['database'] + "?driver=" + info['driver'] + "&encrypt=no"
     return uri
 def dbinfo(target):
+    """
+    dbinfo gets database info from .dbc file.
+    """
     if not hasini():
         return None
     ini = configparser.ConfigParser()
@@ -49,6 +60,9 @@ def dbinfo(target):
     
     return info
 def targets():
+    """
+    targets returns the db targets from the ini file.
+    """
     ini = configparser.ConfigParser()
     ini.read(inipath())
 
@@ -59,7 +73,13 @@ def targets():
 
     return out
 def inipath():
+    """
+    inipath returns the path to the ini.
+    """
     home = Path.home()
     return home / ".dbc"
 def hasini():
+    """
+    hasini reports whether there is a .dbc ini file.
+    """
     return inipath().is_file()

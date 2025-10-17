@@ -3,10 +3,11 @@
 dbcq is a little database connection and query wrapper for python.
 
 ```
-db = dbcq("<target in .dbc>")
+db = dbcq("my_db")
 result = db.qfad("select * from table where name = ?", "adam")
 ```
-documentation [here](https://numlims.github.io/dbcq/).
+
+api doc [here](https://numlims.github.io/dbcq/).
 
 ## install
 
@@ -20,21 +21,14 @@ pip install dbcq-<version>.whl
 
 ## db connection
 
-in your home directory, create a file named `.dbc` and fill in the
-connection info in the <> brackets like this:
+run `dbcq` to create a config file `.dbc` in your home directory:
 
 ```
-[<db target name used in code>]
-type = <mssql|sqlite>
-database = <database name>
-username = <user name>
-password = <password>
-server = <ip address>
-port = <port>
-driver = <path to db driver if needed>
+$ dbcq
+dbcq: please edit /your/home/.dbc, then run again.
 ```
 
-for example:
+fill in the connection info in `.dbc`, for example:
 
 ```
 [my_db]
@@ -47,8 +41,11 @@ port = 1234
 driver = /path/to/my/libmsodbcsql-18.3.so.2.1
 ```
 
-if you're unsure where your home directory is, say `dbcq` to see
-where dbcq looks the `.dbc` file and put it there.
+in this example, `my_db` would then be used to connect to the db:
+
+```
+dbcq("my_db")
+```
 
 to get a list of the available pyodbc driver names for `.dbc`, run
 
@@ -58,13 +55,27 @@ dbcq --drivers
 
 ## dev
 
-assemble code from the .ct files with [ct](https://github.com/tnustrings/ct).
+to generate the code from the .ct files get [ct](https://github.com/tnustrings/ct).
 
 build and install:
 
 ```
 make install
 ```
+
+test:
+
+```
+make test
+```
+
+
+generate api doc:
+
+```
+make doc
+```
+
 
 ## issues
 

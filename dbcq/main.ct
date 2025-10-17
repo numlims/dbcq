@@ -26,10 +26,22 @@ parse arguments.
     args = parser.parse_args()
 ``
 
-start dbcq.
+start dbcq, silently exit if the conf file was just created and needs editing.
 
 ``
-    db = dbcq(args.target)
+    try:
+        db = dbcq(args.target)
+    except cnf.MakeCnfException as e:
+        print("dbcq: " + str(e))
+        return 1
+``
+
+check that the target was there.
+
+``
+    except TargetException as e: # is this referencable from other packages?
+        print("dbcq: " + str(e))
+        return 1
 ``
 
 get the query. if file given, take query from file.
@@ -47,7 +59,7 @@ show targets if needed and exit.
     if args.targets is True:
         for t in dbcq.targets():
             print(t)
-        return
+        return 0
 ``
 
 show drivers if needed and exit.
@@ -56,19 +68,16 @@ show drivers if needed and exit.
     if args.drivers is True:
         if pyodbc is not None:
             print(pyodbc.drivers())
-        return
+        return 0
 ``
 
 query and print result.
 
-    # print(jsonpickle.encode(db.qfad(query)))
-    # jsonpickle puts decimals in wrappers.
-    # could our db output give simpler types?
-    
 for now like this:
 
 ``
     print(json.dumps(db.qfad(query), default=str))
+    return 0
 ``
 
 the imports.
@@ -77,8 +86,10 @@ pyodbc shouldn't need a try anymore, cause it's listed as dependency
 in pyproject.toml.
 
 ``/import:
+import cnf
 import sys
 from dbcq import dbcq
+from dbcq import TargetException
 import simplejson as json
 import argparse
 

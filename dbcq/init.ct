@@ -3,40 +3,47 @@ dbcq holds functions for db connection and querying.
 ``//__init__.py:
 ``import``
 class dbcq:
+    ``var``
     ``init``
-    ``hasini``
-    ``inipath``
     ``targets``
+    ``info``    
+    ``dbconnect``
     ``query``
     ``qfa``
     ``qfad``
-    ``info``
-    ``_row_to_dict``    
+
+    ``connection_string``
+    ``dburi``
+    
+    ``_dbinfo``    
+    ``_row_to_dict``
+
+``TargetException``
 ``
 
-init opens a db connection to a target from .dbc.
+__init__ opens a db connection to a target from .dbc.
+
+throws a `TargetException`.
 
 ``/init:
-    def __init__(self, target):
+    def __init__(self, target:str):
         ``.``
 ``
 
-abort if no ini file. do this before the argparse else argparse
-swallows it (even if this blocks dbcq -h).
+
+get the ini.
 
 ``
-        if not hasini():
-            msg = f"""dbcq: {dbcq.inipath()} not found. please create the file and fill in:
-[<target name>]
-type = <mssql|sqlite>
-database = <database name>
-username = <user name>
-password = <password>
-server = <ip address>
-port = <port>
-driver = <driver>"""
-            print(msg)
-            raise Exception("no .dbc file")
+        self.ini = cnf.makeload(path=".dbc", root=cnf.home, fmt="ini", make=self.cnftemplate)
+``
+
+check that there's a target and that it's in the ini.
+
+``
+        if target == None or target == "":
+            raise TargetException("please specify a db target from: " + str(self.targets()))
+        if target not in self.targets():
+            raise TargetException(f"target {target} not known. please specify a db target from: " + str(self.targets()))
 ``
 
 get the database info for the target.
@@ -44,46 +51,117 @@ get the database info for the target.
 ``
         self.target = target
         if target:
-            self.info = dbinfo(target)
+            self.info = self._dbinfo(self.ini, target)
 ``
 
-hasini returns whether there is a .dbc ini file in the home.
+import.
 
-``/hasini:
-    def hasini():
-        return _dbc.hasini()
+``/import:
+import cnf
 ``
 
-inipath gives the path where dbcq looks for the .dbc ini file (usually in the home).
+add a config template.
 
-``/inipath:
-    def inipath():
-        return _dbc.inipath()
+``/var:
+cnftemplate = """[<target name>]
+type = <mssql|sqlite>
+database = <database name>
+username = <user name>
+password = <password>
+server = <ip address>
+port = <port>
+driver = <driver>
+"""
 ``
 
 targets gives the db targets from .dbc ini file.
 
 ``/targets:
-    def targets():
-        return _dbc.targets()
+def targets(self):
+    out = []
+
+    for target in self.ini.keys():
+        out.append(target)
+
+    return out
 ``
+
+info returns the database info for the current target.
+
+``/info:
+    def info(self):
+        return self.info
+``
+
+dbconnect returns a database connection for the current target.
+
+``/dbconnect:
+def dbconnect(self):
+    ``.``
+``
+
+connect differently depending on database type.
+
+``
+    info = self.info
+    if info['type'] == "sqlite":
+        ``sqlite``
+    else:
+        ``else``
+``
+
+for sqlite. is the package installed?
+
+``./sqlite:
+        if sqlite3 == None:
+            print("error: sqlite3 package missing, please install with pip.")
+            exit
+        return sqlite3.connect(info['database'])
+``
+
+else go with pyodbc for now.
+
+``../else:
+        if pyodbc == None:
+            print("error: pyodbc package missing, please install with pip.")
+            exit
+        # print("connection string: " + self.connection_string(self.info))
+        return pyodbc.connect(self.connection_string(self.info))
+``
+
+imports for dbconnect.
+
+``/import
+try:
+    import pyodbc
+except:
+    pyodbc = None
+    
+import sqlite3
+``
+
+the pyodbc import is optional here although it is required in
+pyproject.toml, but this could maybe be a pattern for other dbc
+packages that the user could install with pip.
+
+sqlite3 is part of the python installation.
 
 query executes query with optional values.
 
 ``/query:
     def query(self, query, *values):
-        with dbconnect(target=self.target) as conn:
+        with self.dbconnect() as conn:
             cursor = conn.cursor()
             cursor.execute(query, *values)
             conn.commit()
 ``
 
-qfa (query-fetch-all) executes query with optional values and returns
+qfa (query-fetch-all) executes a query with optional values and returns
 the results.
 
 ``/qfa:
     def qfa(self, query, *values):
-        with dbconnect(target=self.target) as conn:
+        with self.dbconnect() as conn:
             cursor = conn.cursor()
             cursor.execute(query, *values)
             rows = cursor.fetchall()
@@ -92,7 +170,7 @@ the results.
             return rows
 ``
 
-qfad (query-fetch-all-dict) returns query results as an array of dicts,
+qfad (query-fetch-all-dict) returns the query results as an array of dicts,
 e.g. for json parsing.
 
 ``/qfad:
@@ -116,7 +194,7 @@ for mssql, fold in the cursor description of the row.
 for sqlite, use row factory. from https://stackoverflow.com/a/41920171
 
 ``../sqlite:
-            with dbconnect(target=self.target) as conn:
+            with self.dbconnect() as conn:
                 cursor = conn.cursor()
                 cursor.row_factory = sqlite3.Row
                 cursor.execute(query, values) # pass as tuple, see https://stackoverflow.com/a/16856730
@@ -133,12 +211,30 @@ else, say not supported.
               print(f"db type {self.info['type']} is currently not supported.")
 ``
 
-info returns database info.
+dbinfo gets the database info for target from ini.
 
-``/info:
-    def info(self):
-        return self.info
-``    
+``/_dbinfo:
+@staticmethod
+def _dbinfo(ini, target):
+    ``.``
+``
+
+fill the info from the ini and return.
+
+``
+    info = {
+        'type': ini[target]["type"],
+        'database': ini[target]["database"],
+        'username': ini[target]["username"] if "username" in ini[target] else None,
+        'password': ini[target]["password"] if "password" in ini[target] else None,
+        'server': ini[target]["server"] if "server" in ini[target] else None,
+        'port': ini[target]["port"] if "port" in ini[target] else None,
+        'driver': ini[target]["driver"] if "driver" in ini[target] else None
+    }
+    
+    return info
+``
+
 
 _row_to_dict turns pyodbc-rows to dict:
 
@@ -150,9 +246,43 @@ _row_to_dict turns pyodbc-rows to dict:
         return dict(zip([c for c in columns], row))
 ``
 
-the imports.
+connection_string returns a connection string from info.
 
-``/import:
-from dbcq._dbc import *
-import sys
+``/connection_string:
+@staticmethod
+def connection_string(info) -> str:
+    ``.``
+``
+
+put together the connection string with params from info and return.
+
+``
+    connection_string = 'DRIVER=' + info['driver'] + ';SERVER=' + info['server'] + ';PORT=' + info['port'] + ';DATABASE='+ info['database'] + ';UID=' + info['username'] + ';PWD=' + info['password'] + ';encrypt=no;'
+
+    return connection_string
+``
+
+dburi returns a database uri from info.
+
+``/dburi:
+@staticmethod
+def dburi(info):
+    ``.``
+``
+
+put together the uri with params from the info and return.
+
+for uri see https://docs.sqlalchemy.org/en/14/core/engines.html#database-urls?driver= from https://medium.com/@anushkamehra16/connecting-to-sql-database-using-sqlalchemy-in-python-2be2cf883f85
+
+``
+    uri = "mssql+pyodbc://" + info['username'] + ":" + info['password'] + "@" + info['server'] + ":" + info['port'] + "/" + info['database'] + "?driver=" + info['driver'] + "&encrypt=no"
+    return uri
+``
+
+TargetException is thrown when the target is missing.
+
+``/TargetException:
+class TargetException(Exception):
+    def __init__(self, message:str):
+        super().__init__(message)
 ``
