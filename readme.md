@@ -55,6 +55,8 @@ dbcq --drivers
 
 ## dev
 
+edit [`dbcq/main.ct`](./dbcq/main.ct) and [`dbcq/init.ct`](./dbcq/init.ct).
+
 to generate the code from the .ct files get [ct](https://github.com/tnustrings/ct).
 
 build and install:
