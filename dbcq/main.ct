@@ -7,7 +7,8 @@ sys.exit(main())
 ``
 
 
-main runs a query and returns the result. it can also display a help message with place to put the .dbcq file .
+main runs a query and returns the result. it also accepts command line
+flags for showing drivers and db targets.
 
 ``/main:
 def main():

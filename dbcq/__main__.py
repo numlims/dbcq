@@ -1,3 +1,4 @@
+# automatically generated, DON'T EDIT. please edit main.ct from where this file stems.
 import cnf
 import sys
 from dbcq import dbcq
@@ -11,7 +12,8 @@ except:
     pyodbc = None
 def main():
     """
-    main runs a query and returns the result. it can also display a help message with place to put the .dbcq file .
+     main runs a query and returns the result. it also accepts command line
+     flags for showing drivers and db targets.
     """
     parser = argparse.ArgumentParser(description="connect to a database")
     parser.add_argument("target", nargs="?", help="a target name in .dbc file")
