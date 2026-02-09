@@ -18,7 +18,7 @@ class dbcq:
     """
     def __init__(self, target:str):
         """
-         __init__ opens a db connection to a target from .dbc.
+         __init__ opens a db connection self.conn to a target from .dbc. 
          
          throws a `TargetException`.
         """
@@ -30,6 +30,7 @@ class dbcq:
         self.target = target
         if target:
             self.info = self._dbinfo(self.ini, target)
+        self.conn = self.dbconnect()
     def targets(self):
         """
          targets gives the db targets from .dbc ini file.
@@ -43,6 +44,8 @@ class dbcq:
     def info(self):
         """
          info returns the database info for the current target.
+         
+         todo error? return self._info or scrap this method and just have .info attribute?
         """
         return self.info
     def dbconnect(self):
@@ -65,8 +68,8 @@ class dbcq:
         """
          query executes query with optional values.
         """
-        with self.dbconnect() as conn:
-            cursor = conn.cursor()
+        with self.conn
+            cursor = self.conn.cursor()
             cursor.execute(query, *values)
             conn.commit()
     def qfa(self, query, *values):
@@ -74,8 +77,8 @@ class dbcq:
          qfa (query-fetch-all) executes a query with optional values and returns
          the results.
         """
-        with self.dbconnect() as conn:
-            cursor = conn.cursor()
+        with self.conn:
+            cursor = self.conn.cursor()
             cursor.execute(query, *values)
             rows = cursor.fetchall()
             conn.commit()
@@ -91,8 +94,8 @@ class dbcq:
             dicts = [self._row_to_dict(row) for row in rows]
             return dicts
         elif self.info["type"] == "sqlite":
-            with self.dbconnect() as conn:
-                cursor = conn.cursor()
+            with self.conn:
+                cursor = self.conn.cursor()
                 cursor.row_factory = sqlite3.Row
                 cursor.execute(query, values) # pass as tuple, see https://stackoverflow.com/a/16856730
                 rows = cursor.fetchall()

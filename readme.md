@@ -1,6 +1,6 @@
 # dbcq
 
-dbcq is a little database connection and query wrapper for python.
+database connect and query for python.
 
 ```
 db = dbcq("my_db")

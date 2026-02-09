@@ -21,7 +21,7 @@ class dbcq:
 ``TargetException``
 ``
 
-__init__ opens a db connection to a target from .dbc.
+__init__ opens a db connection self.conn to a target from .dbc. 
 
 throws a `TargetException`.
 
@@ -53,6 +53,22 @@ get the database info for the target.
         if target:
             self.info = self._dbinfo(self.ini, target)
 ``
+
+open the db connection.
+
+``
+        self.conn = self.dbconnect()
+``
+
+maybe use the connection like this:
+
+with conn:
+  crs = conn.cursor()
+  crs.execute("my query")
+
+with calls conn.commit() after the with block, but not crs.close() nor
+conn.cl. see https://stackoverflow.com/a/3783252 and
+https://github.com/mkleehammer/pyodbc/issues/43
 
 import.
 
@@ -87,6 +103,8 @@ def targets(self):
 ``
 
 info returns the database info for the current target.
+
+todo error? return self._info or scrap this method and just have .info attribute?
 
 ``/info:
     def info(self):
@@ -150,8 +168,8 @@ query executes query with optional values.
 
 ``/query:
     def query(self, query, *values):
-        with self.dbconnect() as conn:
-            cursor = conn.cursor()
+        with self.conn
+            cursor = self.conn.cursor()
             cursor.execute(query, *values)
             conn.commit()
 ``
@@ -161,8 +179,8 @@ the results.
 
 ``/qfa:
     def qfa(self, query, *values):
-        with self.dbconnect() as conn:
-            cursor = conn.cursor()
+        with self.conn:
+            cursor = self.conn.cursor()
             cursor.execute(query, *values)
             rows = cursor.fetchall()
             conn.commit()
@@ -194,8 +212,8 @@ for mssql, fold in the cursor description of the row.
 for sqlite, use row factory. from https://stackoverflow.com/a/41920171
 
 ``../sqlite:
-            with self.dbconnect() as conn:
-                cursor = conn.cursor()
+            with self.conn:
+                cursor = self.conn.cursor()
                 cursor.row_factory = sqlite3.Row
                 cursor.execute(query, values) # pass as tuple, see https://stackoverflow.com/a/16856730
                 rows = cursor.fetchall()
