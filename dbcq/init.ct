@@ -62,12 +62,12 @@ open the db connection.
 
 maybe use the connection like this:
 
-with conn:
-  crs = conn.cursor()
+with self.conn:
+  crs = self.conn.cursor()
   crs.execute("my query")
 
 with calls conn.commit() after the with block, but not crs.close() nor
-conn.cl. see https://stackoverflow.com/a/3783252 and
+conn.close(). see https://stackoverflow.com/a/3783252 and
 https://github.com/mkleehammer/pyodbc/issues/43
 
 import.
@@ -168,10 +168,10 @@ query executes query with optional values.
 
 ``/query:
     def query(self, query, *values):
-        with self.conn
+        with self.conn:
             cursor = self.conn.cursor()
             cursor.execute(query, *values)
-            conn.commit()
+            self.conn.commit()
 ``
 
 qfa (query-fetch-all) executes a query with optional values and returns
@@ -183,7 +183,7 @@ the results.
             cursor = self.conn.cursor()
             cursor.execute(query, *values)
             rows = cursor.fetchall()
-            conn.commit()
+            self.conn.commit()
 
             return rows
 ``
@@ -217,7 +217,7 @@ for sqlite, use row factory. from https://stackoverflow.com/a/41920171
                 cursor.row_factory = sqlite3.Row
                 cursor.execute(query, values) # pass as tuple, see https://stackoverflow.com/a/16856730
                 rows = cursor.fetchall()
-                conn.commit()
+                self.conn.commit()
 
                 dicts = [dict(row) for row in rows]
                 return dicts

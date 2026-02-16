@@ -68,10 +68,10 @@ class dbcq:
         """
          query executes query with optional values.
         """
-        with self.conn
+        with self.conn:
             cursor = self.conn.cursor()
             cursor.execute(query, *values)
-            conn.commit()
+            self.conn.commit()
     def qfa(self, query, *values):
         """
          qfa (query-fetch-all) executes a query with optional values and returns
@@ -81,7 +81,7 @@ class dbcq:
             cursor = self.conn.cursor()
             cursor.execute(query, *values)
             rows = cursor.fetchall()
-            conn.commit()
+            self.conn.commit()
 
             return rows
     def qfad(self, query, *values):
@@ -99,7 +99,7 @@ class dbcq:
                 cursor.row_factory = sqlite3.Row
                 cursor.execute(query, values) # pass as tuple, see https://stackoverflow.com/a/16856730
                 rows = cursor.fetchall()
-                conn.commit()
+                self.conn.commit()
 
                 dicts = [dict(row) for row in rows]
                 return dicts
