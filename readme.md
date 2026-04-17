@@ -57,7 +57,7 @@ dbcq --drivers
 
 edit [`dbcq/main.ct`](./dbcq/main.ct) and [`dbcq/init.ct`](./dbcq/init.ct).
 
-to generate the code from the .ct files get [ct](https://github.com/tnustrings/ct).
+generate the code from ct with [ct](https://github.com/tnustrings/ct) or [ct for vscode](https://marketplace.visualstudio.com/items?itemName=tnustrings.codetext).
 
 build and install:
 

@@ -6,6 +6,7 @@ from dbcq import TargetException
 import simplejson as json
 import argparse
 import csv
+import versionflag
 
 try:
     import pyodbc
@@ -23,7 +24,8 @@ def main():
     parser.add_argument("--targets", action="store_true", help="show targets", required=False)
     parser.add_argument("--drivers", action="store_true", help="show pyodbc drivers", required=False)
     parser.add_argument("--csv", help="csv output to file or stdout", default=None, const=True, nargs="?") # default: if no --csv flag is passed, const: if --csv is passed without arg
-    parser.add_argument("-D", help="csv output delimiter, default comma")    
+    parser.add_argument("-D", help="csv output delimiter, default comma")
+    versionflag.flag(parser, "dbcq")
     args = parser.parse_args()
     try:
         db = dbcq(args.target)
