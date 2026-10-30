@@ -19,6 +19,14 @@ pip:
 pip install dbcq-<version>.whl
 ```
 
+reference from your `pyproject.toml`, e.g.:
+
+```
+dependencies = [
+  "dbcq @ git+https://github.com/numlims/dbcq.git"
+]
+```
+
 ## db connection
 
 run `dbcq` to create a config file `.dbc` in your home directory:

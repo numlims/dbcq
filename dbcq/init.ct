@@ -21,7 +21,7 @@ class dbcq:
 ``TargetException``
 ``
 
-__init__ opens a db connection self.conn to a target from .dbc. 
+__init__ loads the ini and remembers the target.
 
 throws a `TargetException`.
 
@@ -30,11 +30,10 @@ throws a `TargetException`.
         ``.``
 ``
 
-
 get the ini.
 
 ``
-        self.ini = cnf.makeload(path=".dbc", root=cnf.home, fmt="ini", make=self.cnftemplate)
+        self.ini = cnf.makeload(path="dbcq.ini", roots=[cnf.system, cnf.home], fmt="ini", make=self.cnftemplate, company="numlims")
 ``
 
 check that there's a target and that it's in the ini.
@@ -51,24 +50,25 @@ get the database info for the target.
 ``
         self.target = target
         if target:
-            self.info = self._dbinfo(self.ini, target)
+            self._info = self._dbinfo(self.ini, target)
 ``
 
-open the db connection.
-
-``
-        self.conn = self.dbconnect()
-``
+don't open a connection here that is used in all methods, cause when
+the methods are called simultaneously (for example from api endpoints)
+it gives a 'connection is busy with results for another command'
+error.
 
 maybe use the connection like this:
 
-with self.conn:
-  crs = self.conn.cursor()
+with closing(self.dbconnect()) as conn:
+  crs = conn.cursor()
   crs.execute("my query")
 
 with calls conn.commit() after the with block, but not crs.close() nor
 conn.close(). see https://stackoverflow.com/a/3783252 and
-https://github.com/mkleehammer/pyodbc/issues/43
+https://github.com/mkleehammer/pyodbc/issues/43   the closing() call should close the connection.  https://github.com/mkleehammer/pyodbc/wiki/Connection#context-manager
+
+``=
 
 import.
 
@@ -104,11 +104,9 @@ def targets(self):
 
 info returns the database info for the current target.
 
-todo error? return self._info or scrap this method and just have .info attribute?
-
 ``/info:
     def info(self):
-        return self.info
+        return self._info
 ``
 
 dbconnect returns a database connection for the current target.
@@ -121,7 +119,7 @@ def dbconnect(self):
 connect differently depending on database type.
 
 ``
-    info = self.info
+    info = self._info
     if info['type'] == "sqlite":
         ``sqlite``
     else:
@@ -143,8 +141,8 @@ else go with pyodbc for now.
         if pyodbc == None:
             print("error: pyodbc package missing, please install with pip.")
             exit
-        # print("connection string: " + self.connection_string(self.info))
-        return pyodbc.connect(self.connection_string(self.info))
+        # print("connection string: " + self.connection_string(self._info))
+        return pyodbc.connect(self.connection_string(self._info))
 ``
 
 imports for dbconnect.
@@ -164,14 +162,22 @@ packages that the user could install with pip.
 
 sqlite3 is part of the python installation.
 
+``=
+
 query executes query with optional values.
 
 ``/query:
     def query(self, query, *values):
-        with self.conn:
-            cursor = self.conn.cursor()
+        with closing(self.dbconnect()) as conn:
+            cursor = conn.cursor()
             cursor.execute(query, *values)
-            self.conn.commit()
+            conn.commit()
+``
+
+import.
+
+``/import
+from contextlib import closing
 ``
 
 qfa (query-fetch-all) executes a query with optional values and returns
@@ -179,11 +185,11 @@ the results.
 
 ``/qfa:
     def qfa(self, query, *values):
-        with self.conn:
-            cursor = self.conn.cursor()
+        with closing(self.dbconnect()) as conn:
+            cursor = conn.cursor()
             cursor.execute(query, *values)
             rows = cursor.fetchall()
-            self.conn.commit()
+            conn.commit()
 
             return rows
 ``
@@ -193,9 +199,9 @@ e.g. for json parsing.
 
 ``/qfad:
     def qfad(self, query, *values):
-        if self.info["type"] == "mssql":
+        if self._info["type"] == "mssql":
             ``mssql``
-        elif self.info["type"] == "sqlite":
+        elif self._info["type"] == "sqlite":
             ``sqlite``
         else:
             ``else``
@@ -212,12 +218,12 @@ for mssql, fold in the cursor description of the row.
 for sqlite, use row factory. from https://stackoverflow.com/a/41920171
 
 ``../sqlite:
-            with self.conn:
+            with closing(self.dbconnect()) as conn:
                 cursor = self.conn.cursor()
                 cursor.row_factory = sqlite3.Row
                 cursor.execute(query, values) # pass as tuple, see https://stackoverflow.com/a/16856730
                 rows = cursor.fetchall()
-                self.conn.commit()
+                conn.commit()
 
                 dicts = [dict(row) for row in rows]
                 return dicts
@@ -226,7 +232,7 @@ for sqlite, use row factory. from https://stackoverflow.com/a/41920171
 else, say not supported.
 
 ``../else:
-              print(f"db type {self.info['type']} is currently not supported.")
+              print(f"db type {self._info['type']} is currently not supported.")
 ``
 
 dbinfo gets the database info for target from ini.
