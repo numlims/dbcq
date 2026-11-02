@@ -1,3 +1,5 @@
+# init
+
 dbcq holds functions for db connection and querying.
 
 ``//__init__.py:
@@ -5,6 +7,7 @@ dbcq holds functions for db connection and querying.
 class dbcq:
     ``var``
     ``init``
+    ``set_target``
     ``targets``
     ``info``    
     ``dbconnect``
@@ -26,14 +29,29 @@ __init__ loads the ini and remembers the target.
 throws a `TargetException`.
 
 ``/init:
-    def __init__(self, target:str):
+    def __init__(self, target:str=None):
         ``.``
 ``
 
 get the ini.
 
 ``
-        self.ini = cnf.makeload(path="dbcq.ini", roots=[cnf.system, cnf.home], fmt="ini", make=self.cnftemplate, company="numlims")
+        self.conf = cnf.cnf(path="dbcq.ini", roots=[cnf.system, cnf.user], fmt="ini", make=self.cnftemplate, company="numlims")
+        self.ini = self.conf.conf  # todo call makeload() here?
+``
+
+set the target.
+
+``
+        if target is not None:
+            self.set_target(target)
+``
+
+set_target sets the target.
+
+``/set_target:
+    def set_target(self, target):
+        ``.``
 ``
 
 check that there's a target and that it's in the ini.
