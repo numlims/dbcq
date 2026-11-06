@@ -19,16 +19,26 @@ pip:
 pip install dbcq-<version>.whl
 ```
 
+reference from your `pyproject.toml`, e.g.:
+
+```
+dependencies = [
+  "dbcq @ git+https://github.com/numlims/dbcq.git"
+]
+```
+
 ## db connection
 
-run `dbcq` to create a config file `.dbc` in your home directory:
+run `dbcq` once to create a stub config file:
 
 ```
 $ dbcq
-dbcq: please edit /your/home/.dbc, then run again.
+dbcq: stub config file created at /home/user/.config/dbcq.ini, please edit.
+you can leave the config file there or move it to:
+/etc/dbcq.ini
 ```
 
-fill in the connection info in `.dbc`, for example:
+edit `dbcq.ini` to fill in the connection info, for example:
 
 ```
 [my_db]
@@ -47,7 +57,7 @@ in this example, `my_db` would then be used to connect to the db:
 dbcq("my_db")
 ```
 
-to get a list of the available pyodbc driver names for `.dbc`, run
+to get a list of the available pyodbc driver names for `dbcq.ini`, run
 
 ```
 dbcq --drivers
@@ -57,7 +67,7 @@ dbcq --drivers
 
 edit [`dbcq/main.ct`](./dbcq/main.ct) and [`dbcq/init.ct`](./dbcq/init.ct).
 
-to generate the code from the .ct files get [ct](https://github.com/tnustrings/ct).
+generate the code from ct with [ct](https://github.com/tnustrings/ct) or [ct for vscode](https://marketplace.visualstudio.com/items?itemName=tnustrings.codetext).
 
 build and install:
 
